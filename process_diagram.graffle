@@ -26,7 +26,7 @@
 	<key>MasterSheets</key>
 	<array/>
 	<key>ModificationDate</key>
-	<string>2013-06-06 02:38:17 +0000</string>
+	<string>2013-06-06 02:44:59 +0000</string>
 	<key>Modifier</key>
 	<string>RJ Nowling</string>
 	<key>NotesVisible</key>
@@ -116,31 +116,6 @@
 			<string>1 0/72 in = 1 0/72 in</string>
 			<key>GraphicsList</key>
 			<array>
-				<dict>
-					<key>Class</key>
-					<string>LineGraphic</string>
-					<key>ID</key>
-					<integer>119</integer>
-					<key>Points</key>
-					<array>
-						<string>{326.28985494696417, 756.88548170464469}</string>
-						<string>{301.39868395219474, 705.96702380094825}</string>
-					</array>
-					<key>Style</key>
-					<dict>
-						<key>stroke</key>
-						<dict>
-							<key>HeadArrow</key>
-							<string>0</string>
-							<key>Legacy</key>
-							<true/>
-							<key>TailArrow</key>
-							<string>FilledArrow</string>
-							<key>Width</key>
-							<real>2</real>
-						</dict>
-					</dict>
-				</dict>
 				<dict>
 					<key>Class</key>
 					<string>LineGraphic</string>
@@ -2125,7 +2100,7 @@
 			<key>RowSpacing</key>
 			<real>36</real>
 			<key>SheetTitle</key>
-			<string>Canvas 1</string>
+			<string>Process Dependencies</string>
 			<key>UniqueID</key>
 			<integer>1</integer>
 			<key>VPages</key>
@@ -2321,7 +2296,7 @@
 {\colortbl;\red255\green255\blue255;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\qc
 
-\f0\fs24 \cf0 Two parent solutions}</string>
+\f0\fs24 \cf0 Two parent fitness}</string>
 						<key>VerticalPad</key>
 						<integer>0</integer>
 					</dict>
@@ -2415,7 +2390,7 @@
 {\colortbl;\red255\green255\blue255;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\qc
 
-\f0\fs24 \cf0 One parent pid, one parent solution}</string>
+\f0\fs24 \cf0 One parent pid, one parent fitness}</string>
 						<key>VerticalPad</key>
 						<integer>0</integer>
 					</dict>
@@ -2533,7 +2508,7 @@
 {\colortbl;\red255\green255\blue255;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\qc
 
-\f0\fs24 \cf0 One parent solution}</string>
+\f0\fs24 \cf0 One parent fitness}</string>
 						<key>VerticalPad</key>
 						<integer>0</integer>
 					</dict>
@@ -2665,7 +2640,7 @@
 			<key>RowSpacing</key>
 			<real>36</real>
 			<key>SheetTitle</key>
-			<string>Canvas 2</string>
+			<string>Crossover FSM</string>
 			<key>UniqueID</key>
 			<integer>2</integer>
 			<key>VPages</key>
@@ -2681,16 +2656,16 @@
 	<key>WindowInfo</key>
 	<dict>
 		<key>CurrentSheet</key>
-		<integer>1</integer>
+		<integer>0</integer>
 		<key>ExpandedCanvases</key>
 		<array>
 			<dict>
 				<key>name</key>
-				<string>Canvas 1</string>
+				<string>Process Dependencies</string>
 			</dict>
 		</array>
 		<key>Frame</key>
-		<string>{{190, -4}, {1014, 878}}</string>
+		<string>{{-92, -117}, {1014, 878}}</string>
 		<key>ListView</key>
 		<true/>
 		<key>OutlineWidth</key>
@@ -2704,18 +2679,18 @@
 		<key>SidebarWidth</key>
 		<integer>120</integer>
 		<key>VisibleRegion</key>
-		<string>{{-152, -3}, {879, 739}}</string>
+		<string>{{0, 19.99999970197678}, {1081.2499838881197, 904.99998651444935}}</string>
 		<key>Zoom</key>
-		<real>1</real>
+		<real>0.80000001192092896</real>
 		<key>ZoomValues</key>
 		<array>
 			<array>
-				<string>Canvas 1</string>
+				<string>Process Dependencies</string>
 				<real>0.80000001192092896</real>
 				<real>1</real>
 			</array>
 			<array>
-				<string>Canvas 2</string>
+				<string>Crossover FSM</string>
 				<real>1</real>
 				<real>0.80000001192092896</real>
 			</array>

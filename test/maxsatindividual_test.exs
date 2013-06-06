@@ -22,7 +22,7 @@ defmodule MaxSATIndividualTest do
   	problem = MaxSATProblem.new num_variables: 5, num_clauses: 3, clauses: [[1, -2, 3], [4, -5, 1], [-2, 3, 4]]
   	pid = spawn(GeneticAlgorithms.MaxSATIndividual, :start, [problem])
   	pid <- {self, :get_solution}
-  	assert_receive {:get_solution, solution}, 5_000, "Failed to receive response from MaxSATIndividual"
+  	assert_receive {^pid, :solution_response, solution}, 5_000, "Failed to receive response from MaxSATIndividual"
   	assert :array.size(solution) == problem.num_variables
   	assert Enum.all?(:array.to_list(solution), fn v -> v == 0 or v == 1 end)
   end
@@ -40,8 +40,8 @@ defmodule MaxSATIndividualTest do
   	refute GeneticAlgorithms.MaxSATIndividual.check_satisfied(unsat_clause, solution)
   	assert GeneticAlgorithms.MaxSATIndividual.fitness(problem, solution) == 2
   	pid = spawn(GeneticAlgorithms.MaxSATIndividual, :start, [problem, solution])
-  	pid <- {self, :fitness}
-  	assert_receive {:fitness, value}, 1_000, "Failed to receive fitness from MaxSATIndividual"
+  	pid <- {self, :get_fitness}
+  	assert_receive {^pid, :fitness_response, value}, 1_000, "Failed to receive fitness from MaxSATIndividual"
   	assert value == 2
   end
 
@@ -50,7 +50,7 @@ defmodule MaxSATIndividualTest do
   	solution = :array.from_list([1, 0, 1, 1, 1])
   	pid = spawn(GeneticAlgorithms.MaxSATIndividual, :start, [problem, solution])
   	pid <- {self, :get_solution}
-  	assert_receive {:get_solution, received_solution}, 1_000, "Failed to receive solution from MaxSATIndividual"
+  	assert_receive {^pid, :solution_response, received_solution}, 1_000, "Failed to receive solution from MaxSATIndividual"
   	assert solution == received_solution
   end
 
@@ -60,7 +60,7 @@ defmodule MaxSATIndividualTest do
   	pid = spawn(GeneticAlgorithms.MaxSATIndividual, :start, [problem])
   	pid <- {:update_solution, solution}
   	pid <- {self, :get_solution}
-  	assert_receive {:get_solution, received_solution}, 1_000, "Failed to receive solution from MaxSATIndividual"
+  	assert_receive {^pid, :solution_response, received_solution}, 1_000, "Failed to receive solution from MaxSATIndividual"
   	assert solution == received_solution
   end
 end

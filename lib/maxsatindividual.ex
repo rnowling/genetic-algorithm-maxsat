@@ -13,10 +13,10 @@ defmodule GeneticAlgorithms.MaxSATIndividual do
 
 	def server(problem_instance, me) do
 		receive do
-			{sender, :fitness} ->
-				sender <- { :fitness, fitness(problem_instance, me) }
+			{sender, :get_fitness} ->
+				sender <- {self, :fitness_response, fitness(problem_instance, me) }
 			{sender, :get_solution} ->
-				sender <- {:get_solution, me}
+				sender <- {self, :solution_response, me}
 			{:update_solution, solution} ->
 				server(problem_instance, solution)
 		end

@@ -1,5 +1,6 @@
 defmodule GeneticAlgorithms.MaxSATIndividual do
 	import GeneticAlgorithms.Utils, only: [fill: 2, random_bit: 0, flip: 1, random_idx: 1]
+
 	def start(problem_instance, me // nil) do
 		if me == nil do
 			me = random_init(problem_instance.num_variables)
@@ -15,12 +16,13 @@ defmodule GeneticAlgorithms.MaxSATIndividual do
 		receive do
 			{sender, :get_fitness} ->
 				sender <- {self, :fitness_response, fitness(problem_instance, me) }
+				server(problem_instance, me)
 			{sender, :get_solution} ->
 				sender <- {self, :solution_response, me}
+				server(problem_instance, me)
 			{:update_solution, solution} ->
 				server(problem_instance, solution)
 		end
-		server(problem_instance, me)
 	end
 
 	def fitness(problem_instance, variables) do

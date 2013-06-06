@@ -45,7 +45,7 @@ defmodule GeneticAlgorithms.Utils do
 		_fill(array, function, idx - 1)
 	end
 
-	defp map(in_array, function) do
+	def map(in_array, function) do
 		size = :array.size(in_array)
 		out_array = :array.new(size)
 		_map(in_array, function, out_array, size - 1)

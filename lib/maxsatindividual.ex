@@ -21,8 +21,11 @@ defmodule GeneticAlgorithms.MaxSATIndividual do
 				sender <- {self, :solution_response, me}
 				server(problem_instance, me)
 			{:update_solution, solution} ->
-				server(problem_instance, solution)
+				me = solution
+			other ->
+				IO.puts (inspect self) <> "Received invalid message " <> inspect(other)
 		end
+		server(problem_instance, me)
 	end
 
 	def fitness(problem_instance, variables) do

@@ -2,46 +2,50 @@ defmodule GeneticAlgorithms.Crossover do
 	import GeneticAlgorithms.Utils, only: [random_idx: 1, map: 2, flip: 1]
 
 	def start(target_pid) do
+		wait_for_pid(target_pid)
+	end
+
+	def wait_for_pid(target_pid) do
 		receive do
-			{parent_pid, :parent_pid} ->
+			{:parent_pid, parent_pid} ->
 				parent_pid <- {self, :get_solution}
-				received_one_pid(target_pid, parent_pid)
+				wait_for_pid_or_solution(target_pid, parent_pid)
 		end
 	end
 
-	def received_one_pid(target_pid, parent1_pid) do
+	def wait_for_pid_or_solution(target_pid, parent1_pid) do
 		receive do
-			{parent2_pid, :parent_pid} ->
-				parent2_pid <- {self, :get_soluton}
-				received_two_pids(target_pid, parent1_pid, parent2_pid)
+			{:parent_pid, parent2_pid} ->
+				parent2_pid <- {self, :get_solution}
+				wait_for_solution(target_pid, parent1_pid, parent2_pid)
 			{^parent1_pid, :solution_response, parent1_solution} ->
-				received_one_solution(target_pid, parent1_solution)
+				wait_for_second_pid(target_pid, parent1_solution)
 		end
 	end
 
-	def received_two_pids(target_pid, parent1_pid, parent2_pid) do
+	def wait_for_solution(target_pid, parent1_pid, parent2_pid) do
 		receive do
-		{^parent1_pid, :solution_response, parent1_solution} ->
-			received_one_pid_one_solution(target_pid, parent2_pid, parent1_solution)
-		{^parent2_pid, :solution_response, parent2_solution} ->
-			received_one_pid_one_solution(target_pid, parent1_pid, parent2_solution)
+			{^parent1_pid, :solution_response, parent1_solution} ->
+				wait_for_second_solution(target_pid, parent2_pid, parent1_solution)
+			{^parent2_pid, :solution_response, parent2_solution} ->
+				wait_for_second_solution(target_pid, parent1_pid, parent2_solution)
 		end
 	end
 
-	def received_one_solution(target_pid, parent1_solution) do
+	def wait_for_second_pid(target_pid, parent1_solution) do
 		receive do
-			{parent2_pid, :parent_pid} ->
-				received_one_pid_one_solution(target_pid, parent2_pid, parent1_solution)
+			{:parent_pid, parent2_pid} ->
+				wait_for_second_solution(target_pid, parent2_pid, parent1_solution)
 		end
 	end
 
-	def received_one_pid_one_solution(target_pid, parent_pid, parent1_solution) do
+	def wait_for_second_solution(target_pid, parent_pid, parent1_solution) do
 		receive do
-			{^parent_pid, :soution_response, parent2_solution} ->
+			{^parent_pid, :solution_response, parent2_solution} ->
 				child = mate_and_mutate(parent1_solution, parent2_solution)
 				target_pid <- {:update_solution, child}
 		end
-		start(target_pid)
+		wait_for_pid(target_pid)
 	end
 
 	def mate_and_mutate(parent1_solution, parent2_solution) do

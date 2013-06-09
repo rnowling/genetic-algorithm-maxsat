@@ -2,7 +2,7 @@ defmodule GeneticAlgorithm.Mixfile do
   use Mix.Project
 
   def project do
-    [ app: :genetic_algorithm,
+    [ app: :"genetic-algorithm-maxsat",
       version: "0.0.1",
       deps: deps ]
   end

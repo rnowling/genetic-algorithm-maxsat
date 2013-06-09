@@ -4,14 +4,6 @@ defmodule MaxSATIndividualTest do
   use ExUnit.Case
   alias GeneticAlgorithms.MaxSATIndividual, as: Individual
 
-  test "read problem" do
-  	problem = MaxSATFunctions.read_problem("data/problems/uf250-01.cnf")
-  	assert problem.num_variables == 250
-  	assert problem.num_clauses == 1065
-  	assert length(problem.clauses) == problem.num_clauses
-  	assert Enum.all?(problem.clauses, fn c -> length(c) == 3 end)
-  end
-
   test "random init" do
   	problem = MaxSATProblem.new num_variables: 5, num_clauses: 3, clauses: [[1, -2, 3], [4, -5, 1], [-2, 3, 4]]
   	random_solution = Individual.random_init(problem.num_variables)

@@ -28,7 +28,7 @@ defmodule GeneticAlgorithms.MaxSATIndividual do
         sender <- {self, :solution_response, generation, me}
       # only let us receive 1 solution per generation -- make us immutable :)
       {:update_solution, generation, solution} when generation > max_generation ->
-        solutions = :array.set(solution, generation, solutions)
+        solutions = :array.set(generation, solution, solutions)
         max_generation = generation
       other ->
         IO.puts (inspect self) <> "Received invalid message " <> inspect(other)

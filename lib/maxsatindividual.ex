@@ -3,31 +3,37 @@ defmodule GeneticAlgorithms.MaxSATIndividual do
 
   def start(problem_instance) do
     me = random_init(problem_instance.num_variables)
-    server(problem_instance, me)
+    solutions = :array.set(0, me, :array.new)
+    server(problem_instance, solutions, 0)
   end
 
   def start(problem_instance, me) do
-    server(problem_instance, me)
+    solutions = :array.set(0, me, :array.new)
+    server(problem_instance, solutions, 0)
   end
 
   def random_init(len) do
     fill(len, function(random_bit/0))
   end
 
-  def server(problem_instance, me) do
+  def server(problem_instance, solutions, max_generation) do
     receive do
-      {sender, :get_fitness} ->
-        sender <- {self, :fitness_response, fitness(problem_instance, me) }
-        server(problem_instance, me)
-      {sender, :get_solution} ->
-        sender <- {self, :solution_response, me}
-        server(problem_instance, me)
-      {:update_solution, solution} ->
-        me = solution
+      # wait until generation is bumped
+      {sender, :get_fitness, generation} when generation <= max_generation ->
+        me = :array.get(generation, solutions)
+        sender <- {self, :fitness_response, generation, fitness(problem_instance, me)}
+      # wait until generation is bumped
+      {sender, :get_solution, generation} when generation <= max_generation ->
+        me = :array.get(generation, solutions)
+        sender <- {self, :solution_response, generation, me}
+      # only let us receive 1 solution per generation -- make us immutable :)
+      {:update_solution, solution, generation} when generation > max_generation ->
+        solutions = :array.set(solution, generation, solutions)
+        max_generation = generation
       other ->
         IO.puts (inspect self) <> "Received invalid message " <> inspect(other)
     end
-    server(problem_instance, me)
+    server(problem_instance, solutions, generation)
   end
 
   def fitness(problem_instance, variables) do

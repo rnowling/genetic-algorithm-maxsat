@@ -27,7 +27,7 @@ defmodule GeneticAlgorithms.MaxSATIndividual do
         me = :array.get(generation, solutions)
         sender <- {self, :solution_response, generation, me}
       # only let us receive 1 solution per generation -- make us immutable :)
-      {:update_solution, solution, generation} when generation > max_generation ->
+      {:update_solution, generation, solution} when generation > max_generation ->
         solutions = :array.set(solution, generation, solutions)
         max_generation = generation
       other ->

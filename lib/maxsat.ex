@@ -1,12 +1,12 @@
-defrecord MaxSATProblem, num_variables: 0, num_clauses: 0, clauses: nil
+defrecord MaxSAT.Problem, num_variables: 0, num_clauses: 0, clauses: nil
 
-defmodule MaxSATFunctions do
+defmodule MaxSAT.Functions do
   import GeneticAlgorithms.Utils, only: [random_idx: 1, flip: 1, fill: 2, map: 2, random_bit: 0]
 
   def read_problem(flname) do
     {:ok, problem_text} = File.read(flname)
     lines = String.split(problem_text, "\n")
-    parse_lines(lines, [], MaxSATProblem.new)
+    parse_lines(lines, [], MaxSAT.Problem.new)
   end
 
   defp parse_lines([head | tail], clause_list, problem) do

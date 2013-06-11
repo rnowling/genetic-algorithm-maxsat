@@ -5,7 +5,7 @@ defmodule MaxSATIndividualTest do
   alias GeneticAlgorithms.MaxSATIndividual, as: Individual
 
   test "individual random init server" do
-    problem = MaxSATProblem.new num_variables: 5, num_clauses: 3, clauses: [[1, -2, 3], [4, -5, 1], [-2, 3, 4]]
+    problem = MaxSAT.Problem.new num_variables: 5, num_clauses: 3, clauses: [[1, -2, 3], [4, -5, 1], [-2, 3, 4]]
     pid = spawn(Individual, :start, [problem])
     pid <- {self, :get_solution, 0}
     assert_receive {^pid, :solution_response, 0, solution}, 1_000, "Failed to receive response from MaxSATIndividual"
@@ -14,7 +14,7 @@ defmodule MaxSATIndividualTest do
   end
 
   test "fitness" do
-    problem = MaxSATProblem.new num_variables: 5, num_clauses: 3, clauses: [[1, -2, 3], [4, -5, 1], [-2, 3, 4]]
+    problem = MaxSAT.Problem.new num_variables: 5, num_clauses: 3, clauses: [[1, -2, 3], [4, -5, 1], [-2, 3, 4]]
     solution = :array.from_list([1, 0, 1, 1, 1])
     pid = spawn(Individual, :start, [problem, solution])
     pid <- {self, :get_fitness, 0}
@@ -23,7 +23,7 @@ defmodule MaxSATIndividualTest do
   end
 
   test "receiving solution" do
-    problem = MaxSATProblem.new num_variables: 5, num_clauses: 3, clauses: [[1, -2, 3], [4, -5, 1], [-2, 3, 4]]
+    problem = MaxSAT.Problem.new num_variables: 5, num_clauses: 3, clauses: [[1, -2, 3], [4, -5, 1], [-2, 3, 4]]
     solution = :array.from_list([1, 0, 1, 1, 1])
     pid = spawn(Individual, :start, [problem, solution])
     pid <- {self, :get_solution, 0}
@@ -32,7 +32,7 @@ defmodule MaxSATIndividualTest do
   end
 
   test "updating solution" do
-    problem = MaxSATProblem.new num_variables: 5, num_clauses: 3, clauses: [[1, -2, 3], [4, -5, 1], [-2, 3, 4]]
+    problem = MaxSAT.Problem.new num_variables: 5, num_clauses: 3, clauses: [[1, -2, 3], [4, -5, 1], [-2, 3, 4]]
     solution = :array.from_list([1, 0, 1, 1, 1])
     pid = spawn(Individual, :start, [problem])
     pid <- {:update_solution, 1, solution}

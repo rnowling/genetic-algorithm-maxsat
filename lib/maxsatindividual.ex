@@ -1,5 +1,5 @@
 defmodule GeneticAlgorithms.MaxSATIndividual do
-  import MaxSATFunctions, only: [random_init: 1, fitness: 2]
+  import MaxSAT.Functions, only: [random_init: 1, fitness: 2]
 
   def start(problem_instance) do
     me = random_init(problem_instance.num_variables)

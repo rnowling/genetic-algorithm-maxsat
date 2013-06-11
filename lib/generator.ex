@@ -1,5 +1,5 @@
 defmodule GeneticAlgorithms.Generator do
-  import MaxSATFunctions, only: [mate_and_mutate: 2]
+  import MaxSAT.Functions, only: [mate_and_mutate: 2]
 
   def start(target_pid, individual_pids) do
     start(target_pid, individual_pids, 0)

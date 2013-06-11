@@ -1,10 +1,12 @@
 defmodule GeneticAlgorithms.MaxSATIndividual do
   import GeneticAlgorithms.Utils, only: [fill: 2, random_bit: 0, flip: 1, random_idx: 1]
 
-  def start(problem_instance, me // nil) do
-    if me == nil do
-      me = random_init(problem_instance.num_variables)
-    end
+  def start(problem_instance) do
+    me = random_init(problem_instance.num_variables)
+    server(problem_instance, me)
+  end
+
+  def start(problem_instance, me) do
     server(problem_instance, me)
   end
 

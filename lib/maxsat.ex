@@ -15,15 +15,18 @@ defmodule MaxSAT.Functions do
       # comment line -- ignore
       line_type == "c" -> 
         parse_lines(tail, clause_list, problem)
+
       # problem def line
       line_type == "p" ->
         [_, _, num_variables, num_clauses] = String.split(head)
         problem = problem.num_variables(binary_to_integer(num_variables))
         problem = problem.num_clauses(binary_to_integer(num_clauses))
         parse_lines(tail, clause_list, problem)
+
       # end of problem
       line_type == "%" ->
         problem.clauses(clause_list)
+        
       # clause
       true ->
         clauses = Enum.map(String.split(head), function(binary_to_integer/1))

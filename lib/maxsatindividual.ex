@@ -18,14 +18,18 @@ defmodule GeneticAlgorithms.MaxSATIndividual do
       {sender, :get_fitness, generation} when generation <= max_generation ->
         me = :array.get(generation, solutions)
         sender <- {self, :fitness_response, generation, fitness(problem_instance, me)}
+
       # wait until generation is bumped
       {sender, :get_solution, generation} when generation <= max_generation ->
         me = :array.get(generation, solutions)
         sender <- {self, :solution_response, generation, me}
+
       # only let us receive 1 solution per generation -- make us immutable :)
       {:update_solution, generation, solution} when generation > max_generation ->
         solutions = :array.set(generation, solution, solutions)
         max_generation = generation
+
+      # catch bad messages
       other ->
         IO.puts (inspect self) <> "Received invalid message " <> inspect(other)
     end

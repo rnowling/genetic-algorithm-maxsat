@@ -30,8 +30,8 @@ defmodule GeneticAlgorithms.MaxSATIndividual do
         max_generation = generation
 
       # catch bad messages
-      other ->
-        IO.puts (inspect self) <> "Received invalid message " <> inspect(other)
+      #other ->
+      #  IO.puts (inspect self) <> "Received invalid message " <> inspect(other)
     end
     server(problem_instance, solutions, generation)
   end

@@ -11,10 +11,7 @@ defmodule GeneticAlgorithms.Generator do
     {indiv1_pid, indiv2_pid, indiv3_pid, indiv4_pid} = choose_four(individual_pids)
 
     # get their fitness values
-    indiv1_fitness = get_fitness(indiv1_pid, generation)
-    indiv2_fitness = get_fitness(indiv2_pid, generation)
-    indiv3_fitness = get_fitness(indiv3_pid, generation)
-    indiv4_fitness = get_fitness(indiv4_pid, generation)
+    {indiv1_fitness, indiv2_fitness, indiv3_fitness, indiv4_fitness} = get_fitness({indiv1_pid, indiv2_pid, indiv3_pid, indiv4_pid}, generation)
 
     # perform the binary tournament
     parent1_pid = binary_tournament({indiv1_fitness, indiv1_pid}, {indiv2_fitness, indiv2_pid})
@@ -41,12 +38,28 @@ defmodule GeneticAlgorithms.Generator do
     {indiv1_pid, indiv2_pid, indiv3_pid, indiv4_pid}
   end
 
-  def get_fitness(indiv_pid, generation) do
-    indiv_pid <- {self, :get_fitness, generation}
+  def get_fitness({indiv1_pid, indiv2_pid, indiv3_pid, indiv4_pid}, generation) do
+    indiv1_pid <- {self, :get_fitness, generation}
+    indiv2_pid <- {self, :get_fitness, generation}
+    indiv3_pid <- {self, :get_fitness, generation}
+    indiv4_pid <- {self, :get_fitness, generation}
     receive do
-      {^indiv_pid, :fitness_response, ^generation, fitness} ->
-        fitness
+      {^indiv1_pid, :fitness_response, ^generation, fitness} ->
+        indiv1_fitness = fitness
     end
+    receive do
+      {^indiv2_pid, :fitness_response, ^generation, fitness} ->
+        indiv2_fitness = fitness
+    end
+    receive do
+      {^indiv3_pid, :fitness_response, ^generation, fitness} ->
+        indiv3_fitness = fitness
+    end
+    receive do
+      {^indiv4_pid, :fitness_response, ^generation, fitness} ->
+        indiv4_fitness = fitness
+    end
+    {indiv1_fitness, indiv2_fitness, indiv3_fitness, indiv4_fitness}
   end
 
   def binary_tournament({indiv1_fitness, indiv1_pid}, {indiv2_fitness, indiv2_pid}) do

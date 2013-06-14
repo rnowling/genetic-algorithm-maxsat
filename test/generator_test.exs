@@ -15,10 +15,27 @@ defmodule GeneratorTest do
 
   test "get fitness" do
     problem = MaxSAT.Problem.new num_variables: 5, num_clauses: 3, clauses: [[1, -2, 3], [4, -5, 1], [-2, 3, 4]]
-    solution = :array.from_list([1, 0, 1, 1, 1])
-    pid = spawn(Individual, :start, [problem, solution])
-    fitness = Generator.get_fitness(pid, 0)
-    assert fitness == Functions.fitness(problem, solution)
+    solution1 = :array.from_list([1, 0, 1, 1, 1])
+    solution2 = :array.from_list([1, 1, 1, 1, 1])
+    solution3 = :array.from_list([1, 1, 1, 1, 0])
+    solution4 = :array.from_list([0, 0, 0, 0, 0])
+
+    assert Functions.fitness(problem, solution1) == 2
+    assert Functions.fitness(problem, solution2) == 0
+    assert Functions.fitness(problem, solution3) == 1
+    assert Functions.fitness(problem, solution4) == 0
+
+    pid1 = spawn(Individual, :start, [problem, solution1])
+    pid2 = spawn(Individual, :start, [problem, solution2])
+    pid3 = spawn(Individual, :start, [problem, solution3])
+    pid4 = spawn(Individual, :start, [problem, solution4])
+
+    {fitness1, fitness2, fitness3, fitness4} = Generator.get_fitness({pid1, pid2, pid3, pid4}, 0)
+
+    assert fitness1 == Functions.fitness(problem, solution1)
+    assert fitness2 == Functions.fitness(problem, solution2)
+    assert fitness3 == Functions.fitness(problem, solution3)
+    assert fitness4 == Functions.fitness(problem, solution4)
   end
 
   test "binary tournament" do
@@ -50,17 +67,20 @@ defmodule GeneratorTest do
   test "one entire generation" do
     problem = MaxSAT.Problem.new num_variables: 5, num_clauses: 3, clauses: [[1, -2, 3], [4, -5, 1], [-2, 3, 4]]
     solution1 = :array.from_list([1, 0, 1, 1, 1])
-    assert Functions.fitness(problem, solution1) == 2
     solution2 = :array.from_list([1, 1, 1, 1, 1])
-    assert Functions.fitness(problem, solution2) == 0
     solution3 = :array.from_list([1, 1, 1, 1, 0])
-    assert Functions.fitness(problem, solution3) == 1
     solution4 = :array.from_list([0, 0, 0, 0, 0])
+
+    assert Functions.fitness(problem, solution1) == 2
+    assert Functions.fitness(problem, solution2) == 0
+    assert Functions.fitness(problem, solution3) == 1
     assert Functions.fitness(problem, solution4) == 0
+
     pid1 = spawn(Individual, :start, [problem, solution1])
     pid2 = spawn(Individual, :start, [problem, solution2])
     pid3 = spawn(Individual, :start, [problem, solution3])
     pid4 = spawn(Individual, :start, [problem, solution4])
+
     individual_pids = :array.from_list([pid1, pid2, pid3, pid4])
     generator = spawn(Generator, :start, [pid1, individual_pids])
     pid1 <- {self, :get_solution, 1}

@@ -18,9 +18,8 @@ defmodule GeneticAlgorithms.Generator do
     parent2_pid = binary_tournament({indiv3_fitness, indiv3_pid}, {indiv4_fitness, indiv4_pid})
 
     # get the solutions of the two winners
-    parent1_solution = get_solution(parent1_pid, generation)
-    parent2_solution = get_solution(parent2_pid, generation)
-
+    {parent1_solution, parent2_solution} = get_solution({parent1_pid, parent2_pid}, generation)
+    
     # produce a child
     child_solution = mate_and_mutate(parent1_solution, parent2_solution)
 
@@ -70,12 +69,18 @@ defmodule GeneticAlgorithms.Generator do
     end
   end
 
-  def get_solution(indiv_pid, generation) do
-    indiv_pid <- {self, :get_solution, generation}
+  def get_solutions({indiv1_pid, indiv2_pid}, generation) do
+    indiv1_pid <- {self, :get_solution, generation}
+    indiv2_pid <- {self, :get_solution, generation}
     receive do
-      {^indiv_pid, :solution_response, ^generation, solution} ->
-        solution
+      {^indiv_pid1, :solution_response, ^generation, solution} ->
+        solution1 = solution
     end
+    receive do
+      {^indiv_pid2, :solution_response, ^generation, solution} ->
+        solution2 = solution
+    end
+    {solution1, solution2}
   end
 
   def send_updated_solution(target_pid, solution, generation) do

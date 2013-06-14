@@ -47,10 +47,20 @@ defmodule GeneratorTest do
 
   test "get solution" do
     problem = MaxSAT.Problem.new num_variables: 5, num_clauses: 3, clauses: [[1, -2, 3], [4, -5, 1], [-2, 3, 4]]
-    solution = :array.from_list([1, 0, 1, 1, 1])
-    pid = spawn(Individual, :start, [problem, solution])
-    recv_solution = Generator.get_solution(pid, 0)
-    assert solution == recv_solution
+    solution1 = :array.from_list([1, 0, 1, 1, 1])
+    solution2 = :array.from_list([1, 1, 1, 1, 1])
+
+    assert Functions.fitness(problem, solution1) == 2
+    assert Functions.fitness(problem, solution2) == 0
+
+    pid1 = spawn(Individual, :start, [problem, solution1])
+    pid2 = spawn(Individual, :start, [problem, solution2])
+
+
+    {recv_solution1, recv_solution2} = Generator.get_solution({pid1, pid2}, 0)
+
+    assert solution1 == recv_solution1
+    assert solution2 == recv_solution2
   end
 
   test "send updated solution" do

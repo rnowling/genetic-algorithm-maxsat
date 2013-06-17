@@ -13,7 +13,7 @@ defmodule MaxSAT.Functions do
     line_type = String.at(head, 0)
     cond do
       # comment line -- ignore
-      line_type == "c" -> 
+      line_type == "c" ->
         parse_lines(tail, clause_list, problem)
 
       # problem def line
@@ -26,15 +26,15 @@ defmodule MaxSAT.Functions do
       # end of problem
       line_type == "%" ->
         problem.clauses(clause_list)
-        
+
       # clause
       true ->
         clauses = Enum.map(String.split(head), function(binary_to_integer/1))
-          # file format contains a 0 at the end of each clause
-          # clauses are 1-index so we can just remove all 0 variables
-          clauses = Enum.filter(clauses, fn v -> v !=0 end)
-          clause_list = [clauses | clause_list]
-          parse_lines(tail, clause_list, problem)
+        # file format contains a 0 at the end of each clause
+        # clauses are 1-index so we can just remove all 0 variables
+        clauses = Enum.filter(clauses, fn v -> v !=0 end)
+        clause_list = [clauses | clause_list]
+        parse_lines(tail, clause_list, problem)
     end
   end
 

@@ -1,12 +1,14 @@
 defmodule GeneticAlgorithms.Generator do
   import MaxSAT.Functions, only: [mate_and_mutate: 2]
-  import GeneticAlgorithms.Utils, as: Utils
+  alias GeneticAlgorithms.Utils, as: Utils
 
   def start(target_pid, individual_pids) do
-    start(target_pid, individual_pids, 0)
+    #IO.puts "Generator " <> inspect(self)
+    :random.seed(:erlang.now())
+    server(target_pid, individual_pids, 0)
   end
 
-  def start(target_pid, individual_pids, generation) do
+  def server(target_pid, individual_pids, generation) do
     # randomly choose 4 individuals
     {indiv1_pid, indiv2_pid, indiv3_pid, indiv4_pid} = choose_four(individual_pids)
 
@@ -26,7 +28,7 @@ defmodule GeneticAlgorithms.Generator do
     # send updated solution
     next_generation = send_updated_solution(target_pid, child_solution, generation)
     
-    start(target_pid, individual_pids, next_generation)
+    server(target_pid, individual_pids, next_generation)
   end
 
   def choose_four(individual_pids) do
@@ -38,6 +40,10 @@ defmodule GeneticAlgorithms.Generator do
   end
 
   def get_fitness({indiv1_pid, indiv2_pid, indiv3_pid, indiv4_pid}, generation) do
+    #IO.puts "Message " <> inspect(:erlang.now()) <> " Generator " <> inspect(self) <> " to " <> inspect(indiv1_pid) <> " " <> inspect({self, :get_fitness, generation})
+    #IO.puts "Message " <> inspect(:erlang.now()) <> " Generator " <> inspect(self) <> " to " <> inspect(indiv2_pid) <> " " <> inspect({self, :get_fitness, generation})
+    #IO.puts "Message " <> inspect(:erlang.now()) <> " Generator " <> inspect(self) <> " to " <> inspect(indiv3_pid) <> " " <> inspect({self, :get_fitness, generation})
+    #IO.puts "Message " <> inspect(:erlang.now()) <> " Generator " <> inspect(self) <> " to " <> inspect(indiv4_pid) <> " " <> inspect({self, :get_fitness, generation})
     indiv1_pid <- {self, :get_fitness, generation}
     indiv2_pid <- {self, :get_fitness, generation}
     indiv3_pid <- {self, :get_fitness, generation}
@@ -70,6 +76,8 @@ defmodule GeneticAlgorithms.Generator do
   end
 
   def get_solutions({indiv1_pid, indiv2_pid}, generation) do
+    #IO.puts "Message " <> inspect(:erlang.now()) <> " Generator " <> inspect(self) <> " to " <> inspect(indiv1_pid) <> " " <> inspect({self, :get_solution, generation})
+    #IO.puts "Message " <> inspect(:erlang.now()) <> " Generator " <> inspect(self) <> " to " <> inspect(indiv2_pid) <> " " <> inspect({self, :get_solution, generation})
     indiv1_pid <- {self, :get_solution, generation}
     indiv2_pid <- {self, :get_solution, generation}
     receive do
@@ -86,6 +94,7 @@ defmodule GeneticAlgorithms.Generator do
   def send_updated_solution(target_pid, solution, generation) do
     next_generation = generation + 1
     target_pid <- {:update_solution, next_generation, solution}
+    #IO.puts "Message " <> inspect(:erlang.now()) <> " Generator " <> inspect(self) <> " to " <> inspect(target_pid) <> " " <> inspect({self, :update_solution, generation})
     next_generation
   end
 

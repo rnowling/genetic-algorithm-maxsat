@@ -72,7 +72,7 @@ defmodule GeneratorTest do
     next_gen = Generator.send_updated_solution(pid, solution2, 0)   
     assert next_gen == 1
     pid <- {self, :get_solution, 1}
-    
+
     assert_receive {^pid, :solution_response, 1, recv_solution}, 1_000, "Failed to receive solution after sending updated solution" <> (inspect pid)
     assert recv_solution == solution2
   end
@@ -95,9 +95,9 @@ defmodule GeneratorTest do
     pid4 = spawn(Individual, :start, [problem, solution4])
 
     individual_pids = :array.from_list([pid1, pid2, pid3, pid4])
-    generator = spawn(Generator, :start, [pid1, individual_pids])
+    _generator = spawn(Generator, :start, [pid1, individual_pids])
     pid1 <- {self, :get_solution, 1}
-    assert_receive {^pid1, :solution_response, 1, recv_solution}, 1_000, "Failed to receive generation 1 solution from " <> (inspect pid1)
+    assert_receive {^pid1, :solution_response, 1, _recv_solution}, 1_000, "Failed to receive generation 1 solution from " <> (inspect pid1)
   end
 
  end

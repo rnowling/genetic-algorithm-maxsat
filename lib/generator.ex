@@ -4,14 +4,20 @@ defmodule GeneticAlgorithms.Generator do
 
   def start(target_pid, individual_pids) do
     :random.seed(:erlang.now())
-    server(target_pid, individual_pids, 0)
+    Process.put(:target_pid, target_pid)
+    Process.put(:individual_pids, individual_pids)
+    server()
   end
 
-  def server(target_pid, individual_pids, generation) do
+  def server() do
+    server(0)
+  end
+
+  def server(generation) do
     check_shutdown()
 
     # randomly choose 4 individuals
-    {indiv1_pid, indiv2_pid, indiv3_pid, indiv4_pid} = choose_four(individual_pids)
+    {indiv1_pid, indiv2_pid, indiv3_pid, indiv4_pid} = choose_four(Process.get(:individual_pids))
 
     # get their fitness values
     {indiv1_fitness, indiv2_fitness, indiv3_fitness, indiv4_fitness} = get_fitness({indiv1_pid, indiv2_pid, indiv3_pid, indiv4_pid}, generation)
@@ -27,9 +33,10 @@ defmodule GeneticAlgorithms.Generator do
     child_solution = mate_and_mutate(parent1_solution, parent2_solution)
 
     # send updated solution
-    next_generation = send_updated_solution(target_pid, child_solution, generation)
+    next_generation = generation + 1
+    send_updated_solution(Process.get(:target_pid), child_solution, next_generation)
     
-    server(target_pid, individual_pids, next_generation)
+    server(next_generation)
   end
 
   def check_shutdown() do
@@ -96,9 +103,7 @@ defmodule GeneticAlgorithms.Generator do
   end
 
   def send_updated_solution(target_pid, solution, generation) do
-    next_generation = generation + 1
-    target_pid <- {:update_solution, next_generation, solution}
-    next_generation
+    target_pid <- {:update_solution, generation, solution}
   end
 
  

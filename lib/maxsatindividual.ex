@@ -4,8 +4,7 @@ defmodule GeneticAlgorithms.MaxSATIndividual do
   def start(problem_instance) do
     :random.seed(:erlang.now())
     me = random_init(problem_instance.num_variables)
-    solutions = :array.set(0, me, :array.new)
-    server(problem_instance, solutions)
+    start(problem_instance, me)
   end
 
   def start(problem_instance, me) do

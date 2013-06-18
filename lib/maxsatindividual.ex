@@ -9,21 +9,22 @@ defmodule GeneticAlgorithms.MaxSATIndividual do
 
   def start(problem_instance, me) do
     solutions = :array.set(0, me, :array.new)
-    server(problem_instance, solutions)
+    Process.put(:problem, problem_instance)
+    server(solutions)
   end
 
-  def server(problem_instance, solutions) do
-    server(problem_instance, solutions, 0)
+  def server(solutions) do
+    server(solutions, 0)
   end
 
-  def server(problem_instance, solutions, max_generation) do
+  def server(solutions, max_generation) do
     check_shutdown()
 
     receive do
       # wait until generation is bumped
       {sender, :get_fitness, generation} when generation <= max_generation ->
         me = :array.get(generation, solutions)
-        sender <- {self, :fitness_response, generation, fitness(problem_instance, me)}
+        sender <- {self, :fitness_response, generation, fitness(Process.get(:problem), me)}
 
       # wait until generation is bumped
       {sender, :get_solution, generation} when generation <= max_generation ->
@@ -35,7 +36,7 @@ defmodule GeneticAlgorithms.MaxSATIndividual do
         max_generation = max_generation + 1
         solutions = :array.set(max_generation, solution, solutions)
     end
-    server(problem_instance, solutions, max_generation)
+    server(solutions, max_generation)
   end
 
   def check_shutdown() do
